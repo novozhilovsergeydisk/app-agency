@@ -26,37 +26,37 @@ export const PORTFOLIO: PortfolioItem[] = [
     id: '1',
     title: 'E-commerce Платформа',
     category: 'Интернет-магазин',
-    imageUrl: 'https://picsum.photos/800/600?random=1'
+    imageUrl: '/images/portfolio1.jpg'
   },
   {
     id: '2',
     title: 'Корпоративный Портал',
     category: 'Корпоративный сайт',
-    imageUrl: 'https://picsum.photos/800/600?random=2'
+    imageUrl: '/images/portfolio2.jpg'
   },
   {
     id: '3',
     title: 'CRM Система',
     category: 'Информационная система',
-    imageUrl: 'https://picsum.photos/800/600?random=3'
+    imageUrl: '/images/portfolio3.jpg'
   },
   {
     id: '4',
     title: 'Лендинг Конференции',
     category: 'Landing Page',
-    imageUrl: 'https://picsum.photos/800/600?random=4'
+    imageUrl: '/images/portfolio4.jpg'
   },
   {
     id: '5',
     title: 'Облачная Инфраструктура',
     category: 'DevOps',
-    imageUrl: 'https://picsum.photos/800/600?random=5'
+    imageUrl: '/images/portfolio5.jpg'
   },
   {
     id: '6',
     title: 'Аналитическая Панель',
     category: 'Dashboard',
-    imageUrl: 'https://picsum.photos/800/600?random=6'
+    imageUrl: '/images/portfolio6.jpg'
   }
 ];
 

@@ -12,6 +12,13 @@ const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Check system preference
@@ -40,6 +47,39 @@ const App: React.FC = () => {
   };
 
   const toggleTheme = () => setDarkMode(!darkMode);
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('Заявка отправлена успешно!');
+        setFormData({ name: '', phone: '', email: '', message: '' });
+      } else {
+        alert('Ошибка при отправке заявки');
+      }
+    } catch (error) {
+      alert('Ошибка при отправке заявки');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -278,15 +318,48 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <form className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4" onSubmit={(e) => e.preventDefault()}>
-              <div className="grid grid-cols-2 gap-4">
-                <input type="text" placeholder="Имя" className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary" />
-                <input type="text" placeholder="Телефон" className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary" />
-              </div>
-              <input type="email" placeholder="Email" className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary" />
-              <textarea rows={4} placeholder="Опишите задачу..." className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
-              <Button fullWidth className="mt-2">Отправить заявку</Button>
-            </form>
+             <form className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4" onSubmit={handleSubmit}>
+               <div className="grid grid-cols-2 gap-4">
+                 <input
+                   type="text"
+                   name="name"
+                   placeholder="Имя"
+                   value={formData.name}
+                   onChange={handleFormChange}
+                   required
+                   className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+                 />
+                 <input
+                   type="text"
+                   name="phone"
+                   placeholder="Телефон"
+                   value={formData.phone}
+                   onChange={handleFormChange}
+                   className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+                 />
+               </div>
+               <input
+                 type="email"
+                 name="email"
+                 placeholder="Email"
+                 value={formData.email}
+                 onChange={handleFormChange}
+                 required
+                 className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+               />
+               <textarea
+                 rows={4}
+                 name="message"
+                 placeholder="Опишите задачу..."
+                 value={formData.message}
+                 onChange={handleFormChange}
+                 required
+                 className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary resize-none"
+               ></textarea>
+               <Button fullWidth className="mt-2" disabled={isSubmitting}>
+                 {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
+               </Button>
+             </form>
           </div>
         </div>
       </section>

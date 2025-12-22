@@ -24,39 +24,39 @@ export const SERVICES: Service[] = [
 export const PORTFOLIO: PortfolioItem[] = [
   {
     id: '1',
-    title: 'E-commerce Платформа',
-    category: 'Интернет-магазин',
-    imageUrl: '/images/portfolio1.jpg'
+    title: 'Телемедицинский сервис для медорганизаций',
+    category: 'medsenger.ru',
+    imageUrl: '/images/pfolio-1.png'
   },
   {
     id: '2',
     title: 'Корпоративный Портал',
     category: 'Корпоративный сайт',
-    imageUrl: '/images/portfolio2.jpg'
+    imageUrl: '/images/pfolio-2.png'
   },
   {
     id: '3',
-    title: 'CRM Система',
-    category: 'Информационная система',
-    imageUrl: '/images/portfolio3.jpg'
+    title: 'Услуги мануального терапевта',
+    category: 'osteovrach.ru',
+    imageUrl: '/images/pfolio-3.png'
   },
   {
     id: '4',
     title: 'Лендинг Конференции',
     category: 'Landing Page',
-    imageUrl: '/images/portfolio4.jpg'
+    imageUrl: '/images/pfolio-4.png'
   },
   {
     id: '5',
     title: 'Облачная Инфраструктура',
     category: 'DevOps',
-    imageUrl: '/images/portfolio5.jpg'
+    imageUrl: '/images/pfolio-5.png'
   },
   {
     id: '6',
     title: 'Аналитическая Панель',
     category: 'Dashboard',
-    imageUrl: '/images/portfolio6.jpg'
+    imageUrl: '/images/pfolio-6.png'
   }
 ];
 

@@ -86,12 +86,10 @@ const App: React.FC = () => {
       {/* Header */}
       <header className="fixed w-full top-0 z-50 bg-white/80 dark:bg-dark/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 transition-colors">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-2xl text-primary cursor-pointer" onClick={() => window.scrollTo(0,0)}>
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
-              <Code className="w-5 h-5" />
+            <div className="flex items-center gap-2 font-bold text-2xl text-primary">
+              <Code className="w-8 h-8" />
+              DevInfra
             </div>
-            TechFlow
-          </div>
 
           <div className="hidden md:flex items-center gap-8">
             <nav className="flex gap-6 text-sm font-medium">
@@ -283,7 +281,8 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Телефон</p>
-                    <p className="font-semibold">+7 (999) 123-45-67</p>
+                    <p className="font-semibold">+7 (499) 519-00-78</p>
+                    <p className="font-semibold">+7 (916) 346-54-07</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -292,18 +291,7 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-semibold">hello@techflow.agency</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
-                    <Send className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Telegram</p>
-                    <a href="https://t.me/techflow_agency" target="_blank" rel="noopener noreferrer" className="font-semibold hover:text-primary transition-colors">
-                      @techflow_agency
-                    </a>
+                    <p className="font-semibold">info@dev-infra.ru</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -312,7 +300,7 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Офис</p>
-                    <p className="font-semibold">Москва, ул. Пушкина, д. 10</p>
+                    <p className="font-semibold">115533, Москва, пр-т Андропова, 22, БЦ «Нагатинский»</p>
                   </div>
                 </div>
               </div>
@@ -368,9 +356,9 @@ const App: React.FC = () => {
       <footer className="bg-white dark:bg-dark border-t border-gray-200 dark:border-slate-800 py-12">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 font-bold text-xl text-primary">
-             <Code className="w-6 h-6" /> TechFlow
+             <Code className="w-6 h-6" /> DevInfra
           </div>
-          <p className="text-gray-500 text-sm">© 2024 TechFlow Agency. Все права защищены.</p>
+          <p className="text-gray-500 text-sm">© {new Date().getFullYear()} dev-infra.ru | Все права защищены.</p>
           <div className="flex gap-4">
              <a href="#" className="text-gray-400 hover:text-primary transition-colors"><Linkedin className="w-5 h-5" /></a>
              <a href="#" className="text-gray-400 hover:text-primary transition-colors"><Github className="w-5 h-5" /></a>

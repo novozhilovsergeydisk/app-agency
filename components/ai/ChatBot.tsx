@@ -13,7 +13,7 @@ const ChatBot: React.FC = () => {
 
   useEffect(() => {
     // Initialize chat
-    chatRef.current = createChatSession("Ты — виртуальный ассистент агентства TechFlow. Твоя цель — отвечать на вопросы о веб-разработке, настройке серверов и базах данных. Будь краток и профессионален.");
+    chatRef.current = createChatSession("Ты — виртуальный ассистент агентства DevInfra. Твоя цель — отвечать на вопросы о веб-разработке, настройке серверов и базах данных. Будь краток и профессионален.");
   }, []);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const ChatBot: React.FC = () => {
     <div className="flex flex-col h-[500px] border border-gray-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-slate-800 overflow-hidden shadow-lg">
       <div className="bg-primary p-4 text-white flex items-center gap-2">
         <Bot className="w-6 h-6" />
-        <h3 className="font-semibold">TechFlow AI Ассистент</h3>
+        <h3 className="font-semibold">DevInfra AI Ассистент</h3>
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-slate-900/50">

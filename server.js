@@ -1,10 +1,12 @@
 import 'dotenv/config';
 import express from 'express';
-import nodemailer from 'nodemailer';
+import fs from 'fs/promises';
+import path from 'path';
 import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SUBMISSIONS_FILE = path.join(process.cwd(), 'contact_submissions.json');
 
 // Middleware
 app.use(cors());
@@ -13,6 +15,7 @@ app.use(express.static('dist'));
 
 // Contact endpoint
 app.post('/api/contact', async (req, res) => {
+  console.log('Received contact request body:', req.body);
   try {
     const { name, email, phone, message } = req.body;
 
@@ -21,35 +24,35 @@ app.post('/api/contact', async (req, res) => {
       return res.status(400).json({ error: 'Name, email, and message are required' });
     }
 
-    // Email options
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.CONTACT_EMAIL, // Send to the contact email
-      subject: `New Contact Form Submission from ${name}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `
+    const newSubmission = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      name,
+      email,
+      phone: phone || 'Not provided',
+      message
     };
 
-    // Send email
-    console.log('Sending email to:', process.env.CONTACT_EMAIL);
-    console.log('SMTP config:', {
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS ? '***' : 'not set'
-    });
-    await transporter.sendMail(mailOptions);
+    let submissions = [];
+    try {
+      const data = await fs.readFile(SUBMISSIONS_FILE, 'utf-8');
+      submissions = JSON.parse(data);
+    } catch (error) {
+      // File doesn't exist or is empty/invalid, start with empty array
+      if (error.code !== 'ENOENT') {
+         console.warn('Error reading submissions file, starting fresh:', error.message);
+      }
+    }
 
-    res.json({ success: true, message: 'Email sent successfully' });
+    submissions.push(newSubmission);
+
+    await fs.writeFile(SUBMISSIONS_FILE, JSON.stringify(submissions, null, 2));
+    console.log('Saved submission to', SUBMISSIONS_FILE);
+
+    res.json({ success: true, message: 'Submission saved successfully' });
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ error: 'Failed to send email' });
+    console.error('Error saving submission:', error);
+    res.status(500).json({ error: 'Failed to save submission' });
   }
 });
 

@@ -18,7 +18,6 @@ const App: React.FC = () => {
     email: '',
     message: ''
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -49,67 +48,32 @@ const App: React.FC = () => {
 
   const toggleTheme = () => setDarkMode(!darkMode);
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Имя обязательно';
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Телефон обязателен';
-    } else if (!/^\+?[0-9\s\-\(\)]{10,}$/.test(formData.phone)) {
-      newErrors.phone = 'Некорректный формат телефона';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email обязателен';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Некорректный формат Email';
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = 'Сообщение обязательно';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [e.target.name]: e.target.value
     });
-    
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      // const response = await fetch('/api/contact', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
 
-      if (response.ok) {
-        alert('Заявка отправлена успешно!');
-        setFormData({ name: '', phone: '', email: '', message: '' });
-      } else {
-        alert('Ошибка при отправке заявки');
-      }
+      // if (response.ok) {
+      //   alert('Заявка отправлена успешно!');
+      //   setFormData({ name: '', phone: '', email: '', message: '' });
+      // } else {
+      //   alert('Ошибка при отправке заявки');
+      // }
     } catch (error) {
       alert('Ошибка при отправке заявки');
     } finally {
@@ -251,7 +215,17 @@ const App: React.FC = () => {
                     </li>
                   ))}
                 </ul>
-                <Button variant="outline" fullWidth>Заказать</Button>
+                <Button 
+                  variant="outline" 
+                  fullWidth 
+                  onClick={() => {
+                    const message = `Тариф: ${plan.title}\nЦена: ${plan.price}\nУслуги:\n- ${plan.features.join('\n- ')}`;
+                    setFormData(prev => ({ ...prev, message }));
+                    scrollToSection('contacts');
+                  }}
+                >
+                  Заказать
+                </Button>
               </div>
             ))}
           </div>
@@ -342,70 +316,44 @@ const App: React.FC = () => {
               </div>
             </div>
 
-             <form 
-               id="contact-form" 
-               className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4" 
-               onSubmit={handleSubmit}
-               autoComplete="off"
-               noValidate
-             >
+             <form className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4" onSubmit={handleSubmit}>
                <div className="grid grid-cols-2 gap-4">
-                 <div className="flex flex-col gap-1">
-                   <input
-                     id="form-name"
-                     type="text"
-                     name="name"
-                     placeholder="Имя"
-                     value={formData.name}
-                     onChange={handleFormChange}
-                     autoComplete="off"
-                     className={`bg-gray-50 dark:bg-slate-900 border ${errors.name ? 'border-red-500' : 'border-transparent'} p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary w-full`}
-                   />
-                   {errors.name && <span className="text-red-500 text-xs pl-1">{errors.name}</span>}
-                 </div>
-                 <div className="flex flex-col gap-1">
-                   <input
-                     id="form-phone"
-                     type="text"
-                     name="phone"
-                     placeholder="Телефон"
-                     value={formData.phone}
-                     onChange={handleFormChange}
-                     autoComplete="off"
-                     className={`bg-gray-50 dark:bg-slate-900 border ${errors.phone ? 'border-red-500' : 'border-transparent'} p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary w-full`}
-                   />
-                   {errors.phone && <span className="text-red-500 text-xs pl-1">{errors.phone}</span>}
-                 </div>
-               </div>
-               
-               <div className="flex flex-col gap-1">
                  <input
-                   id="form-email"
-                   type="email"
-                   name="email"
-                   placeholder="Email"
-                   value={formData.email}
+                   type="text"
+                   name="name"
+                   placeholder="Имя"
+                   value={formData.name}
                    onChange={handleFormChange}
-                   autoComplete="off"
-                   className={`w-full bg-gray-50 dark:bg-slate-900 border ${errors.email ? 'border-red-500' : 'border-transparent'} p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary`}
+                   required
+                   className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
                  />
-                 {errors.email && <span className="text-red-500 text-xs pl-1">{errors.email}</span>}
-               </div>
-
-               <div className="flex flex-col gap-1">
-                 <textarea
-                   id="form-message"
-                   rows={4}
-                   name="message"
-                   placeholder="Опишите задачу..."
-                   value={formData.message}
+                 <input
+                   type="text"
+                   name="phone"
+                   placeholder="Телефон"
+                   value={formData.phone}
                    onChange={handleFormChange}
-                   autoComplete="off"
-                   className={`w-full bg-gray-50 dark:bg-slate-900 border ${errors.message ? 'border-red-500' : 'border-transparent'} p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary resize-none`}
-                 ></textarea>
-                 {errors.message && <span className="text-red-500 text-xs pl-1">{errors.message}</span>}
+                   className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+                 />
                </div>
-
+               <input
+                 type="email"
+                 name="email"
+                 placeholder="Email"
+                 value={formData.email}
+                 onChange={handleFormChange}
+                 required
+                 className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+               />
+               <textarea
+                 rows={4}
+                 name="message"
+                 placeholder="Опишите задачу..."
+                 value={formData.message}
+                 onChange={handleFormChange}
+                 required
+                 className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary resize-none"
+               ></textarea>
                <Button id="submitRequest" fullWidth className="mt-2" disabled={isSubmitting}>
                  {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
                </Button>

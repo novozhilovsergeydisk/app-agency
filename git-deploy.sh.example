@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# === Настройки (ЗАПОЛНИТЕ СВОИМИ ДАННЫМИ) ===
+LOGFILE="$HOME/logs/deploy-app-agency.log"
+PROJECT_DIR="$(pwd)"
+TIMESTAMP=$(date "+%Y-%m-%d %T")
+
+# Настройки вашего сервера
+SERVER_USER="user"
+SERVER_HOST="your-server-alias-or-ip" 
+REMOTE_DIR="/path/to/project"
+SYSTEMD_SERVICE="your-service-name"
+USER_OWNER="www-data"
+
+# === Цвета для вывода ===
+GREEN='\033[32m'
+BLUE='\033[34m'
+YELLOW='\033[33m'
+RED='\033[31m'
+NC='\033[0m' # No Color
+
+# ... (остальной код скрипта такой же как в оригинале) ...

@@ -30,32 +30,32 @@ export const PORTFOLIO: PortfolioItem[] = [
   },
   {
     id: '2',
-    title: 'Корпоративный Портал',
-    category: 'Корпоративный сайт',
+    title: 'Услуги врача-остеопата',
+    category: 'osteovrach.ru',
     imageUrl: '/images/pfolio-2.png'
   },
   {
     id: '3',
-    title: 'Услуги мануального терапевта',
-    category: 'osteovrach.ru',
+    title: 'Тур-оператор',
+    category: 'slavhol.ru',
     imageUrl: '/images/pfolio-3.png'
   },
   {
     id: '4',
-    title: 'Лендинг Конференции',
-    category: 'Landing Page',
+    title: 'Детский медицинский сервис',
+    category: 'kidsrehab.online',
     imageUrl: '/images/pfolio-4.png'
   },
   {
     id: '5',
-    title: 'Облачная Инфраструктура',
-    category: 'DevOps',
+    title: 'Система управления заявками',
+    category: 'lan-install.online',
     imageUrl: '/images/pfolio-5.png'
   },
   {
     id: '6',
-    title: 'Аналитическая Панель',
-    category: 'Dashboard',
+    title: 'Груминг-салон',
+    category: 'salon-groom.ru',
     imageUrl: '/images/pfolio-6.png'
   }
 ];

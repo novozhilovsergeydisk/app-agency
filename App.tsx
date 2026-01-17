@@ -4,8 +4,7 @@ import { SERVICES, PORTFOLIO, PRICING_PLANS } from './constants';
 import Button from './components/Button';
 import Calculator from './components/Calculator';
 import { 
-  Menu, X, Moon, Sun, ArrowUp, Code, Server, Database, Check, Phone, Mail, MapPin, 
-  Linkedin, Github, Twitter, Send 
+  Menu, X, Moon, Sun, ArrowUp, Code, Server, Database, Check, Phone, Mail, MapPin 
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -480,11 +479,6 @@ const App: React.FC = () => {
              <Code className="w-6 h-6" /> DevInfra
           </div>
           <p className="text-gray-500 text-sm">© {new Date().getFullYear()} dev-infra.ru | Все права защищены.</p>
-          <div className="flex gap-4">
-             <a href="#" className="text-gray-400 hover:text-primary transition-colors"><Linkedin className="w-5 h-5" /></a>
-             <a href="#" className="text-gray-400 hover:text-primary transition-colors"><Github className="w-5 h-5" /></a>
-             <a href="#" className="text-gray-400 hover:text-primary transition-colors"><Twitter className="w-5 h-5" /></a>
-          </div>
         </div>
       </footer>
 

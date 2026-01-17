@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
 import { SERVICES, PORTFOLIO, PRICING_PLANS } from './constants';
 import Button from './components/Button';
 import Calculator from './components/Calculator';
@@ -17,6 +18,12 @@ const App: React.FC = () => {
     phone: '',
     email: '',
     message: ''
+  });
+  const [touched, setTouched] = useState({
+    name: false,
+    phone: false,
+    email: false,
+    message: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -55,27 +62,123 @@ const App: React.FC = () => {
     });
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTouched({
+      ...touched,
+      [e.target.name]: true
+    });
+  };
+
+  const validateField = (name: string, value: string) => {
+    switch (name) {
+      case 'name':
+        return value.trim().length >= 2;
+      case 'email':
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      case 'message':
+        return value.trim().length >= 10;
+      case 'phone':
+        // Phone is optional, but if entered, should be reasonable length
+        return value === '' || value.trim().length >= 10;
+      default:
+        return true;
+    }
+  };
+
+  const getInputClass = (name: string) => {
+    const baseClass = "bg-gray-50 dark:bg-slate-900 border p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary transition-all w-full";
+    // @ts-ignore
+    const value = formData[name];
+    // @ts-ignore
+    const isTouched = touched[name];
+    const isValid = validateField(name, value);
+
+    if (!isTouched) return `${baseClass} border-transparent`;
+    return isValid 
+      ? `${baseClass} border-green-500 focus:border-green-500` 
+      : `${baseClass} border-red-500 focus:border-red-500`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all fields before submission
+    const isNameValid = validateField('name', formData.name);
+    const isEmailValid = validateField('email', formData.email);
+    const isMessageValid = validateField('message', formData.message);
+    const isPhoneValid = validateField('phone', formData.phone);
+
+    setTouched({
+      name: true,
+      phone: true,
+      email: true,
+      message: true
+    });
+
+    const toastStyle = {
+      border: '1px solid #EF4444',
+      padding: '12px 24px',
+      color: '#1F2937',
+      background: '#FFFFFF',
+      borderRadius: '12px',
+      fontSize: '14px',
+      fontWeight: '500',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+    };
+
+    if (formData.name.trim().length === 0) {
+      toast.error('Пожалуйста, укажите ваше имя', { icon: null, style: toastStyle });
+      return;
+    }
+    if (!isNameValid) {
+      toast.error('Имя должно содержать минимум 2 символа', { icon: null, style: toastStyle });
+      return;
+    }
+    
+    // Phone is optional, so we only check if it's NOT empty and NOT valid
+    if (formData.phone.trim().length > 0 && !isPhoneValid) {
+      toast.error('Введите корректный номер телефона (минимум 10 цифр)', { icon: null, style: toastStyle });
+      return;
+    }
+
+    if (formData.email.trim().length === 0) {
+      toast.error('Пожалуйста, введите ваш Email', { icon: null, style: toastStyle });
+      return;
+    }
+    if (!isEmailValid) {
+      toast.error('Некорректный формат Email адреса', { icon: null, style: toastStyle });
+      return;
+    }
+
+    if (formData.message.trim().length === 0) {
+      toast.error('Напишите хотя бы пару слов в сообщении', { icon: null, style: toastStyle });
+      return;
+    }
+    if (!isMessageValid) {
+      toast.error('Сообщение слишком короткое (минимум 10 символов)', { icon: null, style: toastStyle });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // if (response.ok) {
-      //   alert('Заявка отправлена успешно!');
-      //   setFormData({ name: '', phone: '', email: '', message: '' });
-      // } else {
-      //   alert('Ошибка при отправке заявки');
-      // }
+      if (response.ok) {
+        toast.success('Заявка отправлена успешно! Мы свяжемся с вами в ближайшее время.');
+        setFormData({ name: '', phone: '', email: '', message: '' });
+        setTouched({ name: false, phone: false, email: false, message: false });
+      } else {
+        toast.error('Ошибка при отправке заявки. Попробуйте позже.');
+      }
     } catch (error) {
-      alert('Ошибка при отправке заявки');
+      toast.error('Ошибка при отправке заявки. Проверьте соединение.');
     } finally {
       setIsSubmitting(false);
     }
@@ -316,7 +419,11 @@ const App: React.FC = () => {
               </div>
             </div>
 
-             <form className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4" onSubmit={handleSubmit}>
+             <form 
+               className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4" 
+               onSubmit={handleSubmit}
+               noValidate
+             >
                <div className="grid grid-cols-2 gap-4">
                  <input
                    type="text"
@@ -324,8 +431,9 @@ const App: React.FC = () => {
                    placeholder="Имя"
                    value={formData.name}
                    onChange={handleFormChange}
+                   onBlur={handleBlur}
                    required
-                   className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+                   className={getInputClass('name')}
                  />
                  <input
                    type="text"
@@ -333,7 +441,8 @@ const App: React.FC = () => {
                    placeholder="Телефон"
                    value={formData.phone}
                    onChange={handleFormChange}
-                   className="bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+                   onBlur={handleBlur}
+                   className={getInputClass('phone')}
                  />
                </div>
                <input
@@ -342,8 +451,9 @@ const App: React.FC = () => {
                  placeholder="Email"
                  value={formData.email}
                  onChange={handleFormChange}
+                 onBlur={handleBlur}
                  required
-                 className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary"
+                 className={getInputClass('email')}
                />
                <textarea
                  rows={4}
@@ -351,8 +461,9 @@ const App: React.FC = () => {
                  placeholder="Опишите задачу..."
                  value={formData.message}
                  onChange={handleFormChange}
+                 onBlur={handleBlur}
                  required
-                 className="w-full bg-gray-50 dark:bg-slate-900 border-none p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary resize-none"
+                 className={`${getInputClass('message')} resize-none`}
                ></textarea>
                <Button id="submitRequest" fullWidth className="mt-2" disabled={isSubmitting}>
                  {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
@@ -384,6 +495,7 @@ const App: React.FC = () => {
       >
         <ArrowUp className="w-6 h-6" />
       </button>
+      <Toaster position="bottom-right" toastOptions={{ duration: 5000 }} />
     </div>
   );
 };

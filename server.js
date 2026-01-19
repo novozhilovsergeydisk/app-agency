@@ -33,20 +33,8 @@ app.post('/api/contact', async (req, res) => {
       message
     };
 
-    let submissions = [];
-    try {
-      const data = await fs.readFile(SUBMISSIONS_FILE, 'utf-8');
-      submissions = JSON.parse(data);
-    } catch (error) {
-      // File doesn't exist or is empty/invalid, start with empty array
-      if (error.code !== 'ENOENT') {
-         console.warn('Error reading submissions file, starting fresh:', error.message);
-      }
-    }
-
-    submissions.push(newSubmission);
-
-    await fs.writeFile(SUBMISSIONS_FILE, JSON.stringify(submissions, null, 2));
+    // Append the new submission as a single line JSON string
+    await fs.appendFile(SUBMISSIONS_FILE, JSON.stringify(newSubmission) + '\n');
     console.log('Saved submission to', SUBMISSIONS_FILE);
 
     res.json({ success: true, message: 'Submission saved successfully' });

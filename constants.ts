@@ -110,5 +110,6 @@ export const ADDITIONAL_COSTS = {
   aiIntegration: 7000, // Интеграция с GPT/LLM
   // Серверы
   backupConfig: 3000,
-  highAvailability: 8000
+  highAvailability: 8000,
+  dbSetup: 5000
 };

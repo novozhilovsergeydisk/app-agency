@@ -9,7 +9,11 @@ import {
   Calculator as CalcIcon 
 } from 'lucide-react';
 
-const Calculator: React.FC = () => {
+interface CalculatorProps {
+  onResult?: () => void;
+}
+
+const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
   const initialState: QuizState = {
     step: 1,
     projectType: null,
@@ -55,6 +59,7 @@ const Calculator: React.FC = () => {
     } else if (state.projectType === 'server') {
       state.features.forEach(f => {
         if (f.includes('Отказоустойчивость')) total += ADDITIONAL_COSTS.highAvailability;
+        else if (f.includes('СУБД')) total += ADDITIONAL_COSTS.dbSetup;
         else total += ADDITIONAL_COSTS.backupConfig;
       });
     } else if (state.projectType === 'custom') {
@@ -67,6 +72,7 @@ const Calculator: React.FC = () => {
   const handleNext = () => {
     if (state.step === 2) {
       setEstimatedCost(calculateCost());
+      if (onResult) onResult();
     }
     setState(prev => ({ ...prev, step: prev.step + 1 }));
   };
@@ -97,6 +103,7 @@ const Calculator: React.FC = () => {
     }
     if (state.projectType === 'bot') {
       return [
+        { id: 'base_bot', label: 'Базовая логика', desc: 'Приветствие, меню, команды', isBase: true },
         { id: 'tg', label: 'Telegram Бот', desc: 'Основная платформа' },
         { id: 'vk', label: 'VK / WhatsApp', desc: 'Дополнительные каналы' },
         { id: 'ai', label: 'Интеграция с AI', desc: 'GPT, нейросети' }
@@ -104,6 +111,9 @@ const Calculator: React.FC = () => {
     }
     if (state.projectType === 'server') {
       return [
+        { id: 'base_os', label: 'Настройка ОС', desc: 'Linux, SSH, Users, Security', isBase: true },
+        { id: 'base_env', label: 'Веб-окружение', desc: 'Nginx, Docker, Runtime', isBase: true },
+        { id: 'db', label: 'Настройка СУБД', desc: 'PostgreSQL, MySQL, MongoDB' },
         { id: 'sec', label: 'Защита и Firewall', desc: 'Безопасность' },
         { id: 'back', label: 'Бэкапы', desc: 'Сохранность данных' },
         { id: 'ha', label: 'Отказоустойчивость', desc: 'Кластеры' },
@@ -111,6 +121,7 @@ const Calculator: React.FC = () => {
       ];
     }
     return [
+      { id: 'base_web', label: 'Базовый движок', desc: 'Админка, формы, SEO-модуль', isBase: true },
       { id: 'payment', label: 'Онлайн оплата', desc: 'ЮKassa, Robokassa' },
       { id: 'cabinet', label: 'Личный кабинет', desc: 'Профиль пользователя' },
       { id: 'pwa', label: 'PWA-приложение', desc: 'Установка на телефон' },
@@ -142,7 +153,7 @@ const Calculator: React.FC = () => {
                     }`}
                   >
                     <Icon className={`w-8 h-8 mb-4 ${isSelected ? 'text-primary' : 'text-gray-400'}`} />
-                    <span className="block font-bold mb-1">{type.label}</span>
+                    <span className="block font-bold mb-1 leading-tight">{type.label}</span>
                     <span className="text-xs text-gray-500">{type.desc}</span>
                   </button>
                 );
@@ -159,7 +170,7 @@ const Calculator: React.FC = () => {
             </div>
 
             {isWebService && (
-              <div className="bg-gray-50 dark:bg-slate-900/50 p-6 rounded-xl border border-gray-100 dark:border-slate-700">
+              <div className="bg-gray-50 dark:bg-slate-900/50 p-6 rounded-xl border border-gray-100 dark:border-slate-700 mb-6">
                 <p className="font-semibold mb-4 flex items-center gap-2">
                   <Palette className="w-5 h-5 text-primary" />
                   Дизайн
@@ -187,27 +198,37 @@ const Calculator: React.FC = () => {
 
             <div className="grid grid-cols-1 gap-3">
               {getFeatures().map(feature => {
-                 const isSelected = state.features.includes(feature.label);
+                 // @ts-ignore
+                 const isBase = feature.isBase;
+                 const isSelected = isBase || state.features.includes(feature.label);
                  return (
                     <div 
                       key={feature.id}
                       onClick={() => {
+                        if (isBase) return;
                         const exists = state.features.includes(feature.label);
                         setState(prev => ({
                           ...prev,
                           features: exists ? prev.features.filter(f => f !== feature.label) : [...prev.features, feature.label]
                         }))
                       }}
-                      className={`p-4 rounded-xl border cursor-pointer flex justify-between items-center transition-all ${
-                          isSelected ? 'border-primary bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-slate-700'
+                      className={`p-4 rounded-xl border flex justify-between items-center transition-all ${
+                          isBase ? 'border-emerald-100 bg-emerald-50/50 dark:border-emerald-900/30 dark:bg-emerald-900/10 cursor-default' :
+                          isSelected ? 'border-primary bg-blue-50 dark:bg-blue-900/20 cursor-pointer' : 
+                          'border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-900/50 cursor-pointer'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-5 h-5 rounded flex items-center justify-center border ${isSelected ? 'bg-primary border-primary' : 'border-gray-300'}`}>
+                        <div className={`w-5 h-5 rounded flex items-center justify-center border ${
+                            isBase ? 'bg-emerald-500 border-emerald-500' :
+                            isSelected ? 'bg-primary border-primary' : 'border-gray-300'
+                        }`}>
                             {isSelected && <Check className="w-4 h-4 text-white" />}
                         </div>
                         <div>
-                            <span className="font-medium block text-sm">{feature.label}</span>
+                            <span className="font-medium block text-sm">
+                                {feature.label} {isBase && <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.5 rounded ml-2 font-bold uppercase tracking-wider italic">включено</span>}
+                            </span>
                             <span className="text-xs text-gray-400">{feature.desc}</span>
                         </div>
                       </div>
@@ -234,7 +255,7 @@ const Calculator: React.FC = () => {
               <RefreshCw className="w-4 h-4" /> Рассчитать заново
             </Button>
             <p className="text-xs text-gray-400 mt-6">
-                Не является публичной офертой. Стоимость уточняется после составления ТЗ.
+                Не является публичной офертой. Стоимость уточняется после уточнения всех деталей.
             </p>
           </div>
         );

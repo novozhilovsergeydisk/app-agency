@@ -226,6 +226,21 @@ const App: React.FC = () => {
     }
   };
 
+  const clearForm = () => {
+    setFormData({
+      name: "",
+      phone: "",
+      email: "",
+      message: "",
+    });
+    setTouched({
+      name: false,
+      phone: false,
+      email: false,
+      message: false,
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -478,7 +493,7 @@ const App: React.FC = () => {
         className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800"
       >
         <div className="container mx-auto px-4">
-          <Calculator />
+          <Calculator onResult={clearForm} />
         </div>
       </section>
 

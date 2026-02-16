@@ -11,7 +11,7 @@ const SUBMISSIONS_FILE = path.join(process.cwd(), 'contact_submissions.json');
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('dist'));
+app.use(express.static(path.join(process.cwd(), 'dist')));
 
 // Contact endpoint
 app.post('/api/contact', async (req, res) => {
@@ -42,6 +42,11 @@ app.post('/api/contact', async (req, res) => {
     console.error('Error saving submission:', error);
     res.status(500).json({ error: 'Failed to save submission' });
   }
+});
+
+// Catch-all route for SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {

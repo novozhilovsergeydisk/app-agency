@@ -531,55 +531,23 @@ const App: React.FC = () => {
 
       {/* Contacts Section */}
       <section id="contacts" className="py-20 bg-gray-50 dark:bg-slate-900">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-3xl font-bold mb-6">Свяжитесь с нами</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8">
-                Готовы обсудить ваш проект? Оставьте заявку, и мы свяжемся с
-                вами в течение 15 минут.
-              </p>
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Свяжитесь с нами</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Готовы обсудить ваш проект? Оставьте заявку, и мы свяжемся с
+              вами в течение 15 минут.
+            </p>
+          </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Телефон</p>
-                    <p className="font-semibold">+7 (499) 519-00-78</p>
-                    <p className="font-semibold">+7 (916) 346-54-07</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-semibold">info@dev-infra.ru</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Офис</p>
-                    <p className="font-semibold">
-                      115533, Москва, пр-т Андропова, 22, БЦ «Нагатинский»
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+          <div className="flex flex-col gap-12">
+            {/* Form First */}
             <form
               className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4"
               onSubmit={handleSubmit}
               noValidate
             >
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"
                   name="name"
@@ -629,6 +597,40 @@ const App: React.FC = () => {
                 {isSubmitting ? "Отправка..." : "Отправить заявку"}
               </Button>
             </form>
+
+            {/* Contact Info Second */}
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-700">
+                <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Телефон</p>
+                  <p className="font-semibold">+7 (499) 519-00-78</p>
+                  <p className="font-semibold">+7 (916) 346-54-07</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-700">
+                <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Email</p>
+                  <p className="font-semibold">info@dev-infra.ru</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-700">
+                <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
+                  <MapPin className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Офис</p>
+                  <p className="font-semibold">
+                    115533, Москва, БЦ «Нагатинский»
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -636,9 +638,6 @@ const App: React.FC = () => {
       {/* Footer */}
       <footer className="bg-white dark:bg-dark border-t border-gray-200 dark:border-slate-800 py-12">
         <div className="container mx-auto px-4 text-center">
-          <div className="font-bold text-xl text-primary mb-4">
-            DevInfra
-          </div>
           <p className="text-gray-500 text-sm mb-6">
             © {new Date().getFullYear()} dev-infra.ru | Все права защищены.
           </p>

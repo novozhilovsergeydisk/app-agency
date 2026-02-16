@@ -9,10 +9,6 @@ interface LegalPageProps {
 }
 
 const LegalPage: React.FC<LegalPageProps> = ({ title, onBack, children }) => {
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="p-6 md:p-10 text-slate-900 dark:text-slate-100">
       <div className="max-w-none">

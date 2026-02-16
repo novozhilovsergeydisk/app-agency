@@ -53,10 +53,20 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
         else total += ADDITIONAL_COSTS.feature;
       });
     } else if (state.projectType === 'bot') {
-      state.features.forEach(f => {
-        if (f.includes('AI')) total += ADDITIONAL_COSTS.aiIntegration;
-        else total += ADDITIONAL_COSTS.botPlatform;
-      });
+      const extraTasks = Math.max(0, state.features.length - 1);
+      total = base;
+      
+      // We still need to account for AI premium if selected
+      let hasAI = state.features.some(f => f.includes('AI'));
+      if (hasAI) {
+        total += ADDITIONAL_COSTS.aiIntegration;
+        // If AI is selected, and there are other tasks, they cost as extra
+        if (state.features.length > 1) {
+          total += (state.features.length - 1) * ADDITIONAL_COSTS.botPlatform;
+        }
+      } else {
+        total += extraTasks * ADDITIONAL_COSTS.botPlatform;
+      }
     } else if (state.projectType === 'server') {
       state.features.forEach(f => {
         if (f.includes('Отказоустойчивость')) total += ADDITIONAL_COSTS.highAvailability;
@@ -64,7 +74,9 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
         else total += ADDITIONAL_COSTS.backupConfig;
       });
     } else if (state.projectType === 'custom') {
-      total += state.features.length * 3000;
+      // Logic: 1st task is included in basePrice (5000), each subsequent is +3000
+      const extraTasks = Math.max(0, state.features.length - 1);
+      total = base + (extraTasks * 3000);
     }
 
     return total;
@@ -104,7 +116,6 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
     }
     if (state.projectType === 'bot') {
       return [
-        { id: 'base_bot', label: 'Базовая логика', desc: 'Приветствие, меню, команды', isBase: true },
         { id: 'tg', label: 'Telegram Бот', desc: 'Основная платформа' },
         { id: 'vk', label: 'VK / WhatsApp', desc: 'Дополнительные каналы' },
         { id: 'ai', label: 'Интеграция с AI', desc: 'GPT, нейросети' }
@@ -285,6 +296,8 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
   const canProceed = () => {
     if (state.step === 1 && !state.projectType) return false;
     if (state.step === 2 && isWebService && state.hasDesign === null) return false;
+    // For custom tasks and bots, require at least one feature
+    if (state.step === 2 && (state.projectType === 'custom' || state.projectType === 'bot') && state.features.length === 0) return false;
     return true;
   };
 

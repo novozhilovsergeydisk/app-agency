@@ -196,11 +196,14 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
           </div>
         );
       case 2:
+        const currentProject = projectTypes.find(t => t.id === state.projectType);
         return (
           <div className="space-y-6 animate-fadeIn">
             <div className="text-center mb-6">
-                <h3 className="text-xl font-bold mb-2">Настройка параметров</h3>
-                <p className="text-gray-500 text-sm">Выберите необходимые опции</p>
+                <h3 className="text-xl font-bold mb-2">
+                  {currentProject ? currentProject.label : 'Настройка параметров'}
+                </h3>
+                <p className="text-gray-500 text-sm">Выберите дополнительные опции</p>
             </div>
 
             {isWebService && (

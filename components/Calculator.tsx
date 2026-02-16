@@ -45,10 +45,11 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
 
     if (isWebService) {
       if (state.hasDesign === false) {
-        total += ADDITIONAL_COSTS.designPerPage * 2; // Flat fee estimate for design
+        total += ADDITIONAL_COSTS.designPerPage * 2;
       }
       state.features.forEach(f => {
         if (f === 'PWA-приложение') total += ADDITIONAL_COSTS.pwa;
+        else if (f.includes('AI')) total += ADDITIONAL_COSTS.aiIntegration;
         else total += ADDITIONAL_COSTS.feature;
       });
     } else if (state.projectType === 'bot') {
@@ -63,7 +64,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
         else total += ADDITIONAL_COSTS.backupConfig;
       });
     } else if (state.projectType === 'custom') {
-      total += state.features.length * 3000; // Flat fee for minor tasks
+      total += state.features.length * 3000;
     }
 
     return total;
@@ -120,12 +121,29 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
         { id: 'mon', label: 'Мониторинг 24/7', desc: 'Grafana, Alerting' }
       ];
     }
+    if (state.projectType === 'shop') {
+      return [
+        { id: 'base_shop', label: 'Базовый магазин', desc: 'Каталог, корзина, Тех. SEO', isBase: true },
+        { id: 'payment', label: 'Онлайн оплата', desc: 'ЮKassa, Robokassa', isBase: true },
+        { id: 'cabinet', label: 'Личный кабинет клиента', desc: 'Заказы, бонусы, профиль', isBase: true },
+        { id: 'pwa', label: 'PWA-приложение', desc: 'Установка на телефон' },
+        { id: 'bot_int', label: 'Интеграция с чат-ботами', desc: 'Синхронизация заказов и заявок' }
+      ];
+    }
+    if (state.projectType === 'system') {
+      return [
+        { id: 'base_system', label: 'Ядро системы', desc: 'Сложная логика, API, Тех. SEO', isBase: true },
+        { id: 'cabinet', label: 'Личный кабинет клиента', desc: 'Управление доступом, профиль', isBase: true },
+        { id: 'pwa', label: 'PWA-приложение', desc: 'Установка на телефон' },
+        { id: 'bot_int', label: 'Интеграция с чат-ботами', desc: 'Уведомления и поддержка' }
+      ];
+    }
     return [
-      { id: 'base_web', label: 'Базовый движок', desc: 'Админка, формы, SEO-модуль', isBase: true },
+      { id: 'base_web', label: 'Базовый движок', desc: 'Админка, формы, Техническое SEO', isBase: true },
       { id: 'payment', label: 'Онлайн оплата', desc: 'ЮKassa, Robokassa' },
-      { id: 'cabinet', label: 'Личный кабинет', desc: 'Профиль пользователя' },
+      { id: 'cabinet', label: 'Личный кабинет клиента', desc: 'Заказы, бонусы, профиль' },
       { id: 'pwa', label: 'PWA-приложение', desc: 'Установка на телефон' },
-      { id: 'seo', label: 'SEO оптимизация', desc: 'Продвижение в поиске' }
+      { id: 'bot_int', label: 'Интеграция с чат-ботами', desc: 'Автоматизация заявок' }
     ];
   };
 

@@ -1,3 +1,10 @@
+export interface PricingPlan {
+  title: string;
+  price: string;
+  basePrice: number;
+  features: string[];
+}
+
 export interface Service {
   id: string;
   title: string;

@@ -1,4 +1,4 @@
-import { Service, PortfolioItem } from './types';
+import { Service, PortfolioItem, PricingPlan } from './types';
 
 export const SERVICES: Service[] = [
   {
@@ -60,25 +60,55 @@ export const PORTFOLIO: PortfolioItem[] = [
   }
 ];
 
-export const PRICING_PLANS = [
+export const PRICING_PLANS: PricingPlan[] = [
   {
     title: 'Landing Page',
-    price: 'от 15 000 ₽',
+    price: 'от 10 000 ₽',
+    basePrice: 10000,
     features: ['1 страница', 'Адаптивный дизайн', 'Форма заявки', 'Базовая SEO']
   },
   {
-    title: 'Корпоративный Сайт',
-    price: 'от 40 000 ₽',
-    features: ['до 10 страниц', 'Каталог услуг', 'Админ-панель', 'Новости/Блог']
-  },
-  {
     title: 'Интернет-Магазин',
-    price: 'от 75 000 ₽',
+    price: 'от 70 000 ₽',
+    basePrice: 70000,
     features: ['Каталог товаров', 'Корзина и оплата', 'Личный кабинет', 'Интеграция с 1С']
   },
   {
     title: 'Информационная Система',
-    price: 'от 150 000 ₽',
-    features: ['Сложная логика', 'Разграничение прав', 'API', 'Высокая нагрузка']
+    price: 'от 100 000 ₽',
+    basePrice: 100000,
+    features: ['Сложная логика', 'Личные кабинеты', 'Интеграции по API', 'Высокая нагрузка']
+  },
+  {
+    title: 'Чат-боты & AI',
+    price: 'от 5 000 ₽',
+    basePrice: 5000,
+    features: ['Telegram/VK/WhatsApp', 'Интеграция с ИИ', 'Автоматизация продаж', 'Сбор заявок']
+  },
+  {
+    title: 'Настройка серверов',
+    price: 'от 10 000 ₽',
+    basePrice: 10000,
+    features: ['Linux (Debian/Ubuntu)', 'Безопасность & Firewall', 'Docker & CI/CD', 'Мониторинг 24/7']
+  },
+  {
+    title: 'Разовые задачи',
+    price: 'от 5 000 ₽',
+    basePrice: 5000,
+    features: ['SSL + HTTPS', 'Настройка аналитики', 'SEO-оптимизация', 'Исправление ошибок']
   }
 ];
+
+export const ADDITIONAL_COSTS = {
+  // Веб-сайты
+  page: 1500,
+  designPerPage: 2500,
+  feature: 5000,
+  pwa: 10000,
+  // Чат-боты
+  botPlatform: 3000, // За каждый доп. мессенджер
+  aiIntegration: 7000, // Интеграция с GPT/LLM
+  // Серверы
+  backupConfig: 3000,
+  highAvailability: 8000
+};

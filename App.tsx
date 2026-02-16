@@ -382,7 +382,7 @@ const App: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 flex-1 flex items-center relative overflow-hidden">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4 flex-1 flex items-center relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-50 to-transparent dark:from-blue-900/20 pointer-events-none -z-10" />
         <div className="container mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
@@ -438,7 +438,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 bg-gray-50 dark:bg-slate-900">
+      <section id="services" className="py-12 md:py-20 bg-gray-50 dark:bg-slate-900">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Наши Услуги</h2>
@@ -471,7 +471,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20">
+      <section id="pricing" className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Прайс Лист</h2>
@@ -521,7 +521,7 @@ const App: React.FC = () => {
       {/* Calculator Section */}
       <section
         id="calculator"
-        className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800 scroll-mt-20"
+        className="py-12 md:py-20 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800 scroll-mt-20"
       >
         <div className="container mx-auto px-4">
           <Calculator 
@@ -535,7 +535,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-20">
+      <section id="portfolio" className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Наши Работы</h2>
@@ -639,7 +639,7 @@ const App: React.FC = () => {
       )}
 
       {/* Contacts Section */}
-      <section id="contacts" className="py-20 bg-gray-50 dark:bg-slate-900">
+      <section id="contacts" className="py-12 md:py-20 bg-gray-50 dark:bg-slate-900">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Свяжитесь с нами</h2>

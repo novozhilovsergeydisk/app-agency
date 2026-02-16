@@ -18,6 +18,8 @@ import {
   Phone,
   Mail,
   MapPin,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const App: React.FC = () => {
@@ -26,7 +28,35 @@ const App: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showConsent, setShowConsent] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [activeSection, setActiveSection] = useState("");
+
+  const handleNextImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (selectedImageIndex !== null) {
+      setSelectedImageIndex((selectedImageIndex + 1) % PORTFOLIO.length);
+    }
+  };
+
+  const handlePrevImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (selectedImageIndex !== null) {
+      setSelectedImageIndex((selectedImageIndex - 1 + PORTFOLIO.length) % PORTFOLIO.length);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedImageIndex === null) return;
+      if (e.key === "ArrowRight") handleNextImage();
+      if (e.key === "ArrowLeft") handlePrevImage();
+      if (e.key === "Escape") setSelectedImageIndex(null);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImageIndex]);
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -50,8 +80,34 @@ const App: React.FC = () => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
     };
+
+    // Intersection Observer for ScrollSpy
+    const sections = ["services", "pricing", "calculator", "portfolio", "contacts"];
+    const observerOptions = {
+      root: null,
+      rootMargin: "-20% 0px -70% 0px",
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    sections.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -103,29 +159,56 @@ const App: React.FC = () => {
     }
   };
 
-  const getInputClass = (name: string) => {
-    const baseClass =
-      "bg-gray-50 dark:bg-slate-900 border p-4 rounded-lg outline-none focus:ring-2 focus:ring-primary transition-all w-full";
+  const getFieldError = (name: string) => {
     // @ts-ignore
     const value = formData[name];
     // @ts-ignore
     const isTouched = touched[name];
-    const isValid = validateField(name, value);
 
-    if (!isTouched) return `${baseClass} border-transparent`;
-    return isValid
-      ? `${baseClass} border-green-500 focus:border-green-500`
-      : `${baseClass} border-red-500 focus:border-red-500`;
+    if (!isTouched) return "";
+
+    switch (name) {
+      case "name":
+        if (value.trim().length === 0) return "Пожалуйста, укажите ваше имя";
+        if (value.trim().length < 2) return "Имя должно содержать минимум 2 символа";
+        break;
+      case "email":
+        if (value.trim().length === 0) return "Пожалуйста, введите ваш Email";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Некорректный формат Email адреса";
+        break;
+      case "message":
+        if (value.trim().length === 0) return "Напишите хотя бы пару слов в сообщении";
+        if (value.trim().length < 10) return "Сообщение слишком короткое (минимум 10 символов)";
+        break;
+      case "phone":
+        if (value.trim().length > 0 && value.trim().length < 10) return "Введите минимум 10 цифр";
+        break;
+    }
+    return "";
+  };
+
+  const getInputClass = (name: string) => {
+    const baseClass =
+      "bg-gray-50 dark:bg-slate-900 border p-4 rounded-lg outline-none focus:ring-2 transition-all w-full";
+    // @ts-ignore
+    const isTouched = touched[name];
+    const error = getFieldError(name);
+
+    if (!isTouched) return `${baseClass} border-transparent focus:ring-primary`;
+    return error === ""
+      ? `${baseClass} border-green-500 focus:border-green-500 focus:ring-green-500/20`
+      : `${baseClass} border-red-500 focus:border-red-500 focus:ring-red-500/20`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate all fields before submission
-    const isNameValid = validateField("name", formData.name);
-    const isEmailValid = validateField("email", formData.email);
-    const isMessageValid = validateField("message", formData.message);
-    const isPhoneValid = validateField("phone", formData.phone);
+    const errors = {
+      name: getFieldError("name"),
+      email: getFieldError("email"),
+      message: getFieldError("message"),
+      phone: getFieldError("phone"),
+    };
 
     setTouched({
       name: true,
@@ -134,68 +217,8 @@ const App: React.FC = () => {
       message: true,
     });
 
-    const toastStyle = {
-      border: "1px solid #EF4444",
-      padding: "12px 24px",
-      color: "#1F2937",
-      background: "#FFFFFF",
-      borderRadius: "12px",
-      fontSize: "14px",
-      fontWeight: "500",
-      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-    };
-
-    if (formData.name.trim().length === 0) {
-      toast.error("Пожалуйста, укажите ваше имя", {
-        icon: null,
-        style: toastStyle,
-      });
-      return;
-    }
-    if (!isNameValid) {
-      toast.error("Имя должно содержать минимум 2 символа", {
-        icon: null,
-        style: toastStyle,
-      });
-      return;
-    }
-
-    // Phone is optional, so we only check if it's NOT empty and NOT valid
-    if (formData.phone.trim().length > 0 && !isPhoneValid) {
-      toast.error("Введите корректный номер телефона (минимум 10 цифр)", {
-        icon: null,
-        style: toastStyle,
-      });
-      return;
-    }
-
-    if (formData.email.trim().length === 0) {
-      toast.error("Пожалуйста, введите ваш Email", {
-        icon: null,
-        style: toastStyle,
-      });
-      return;
-    }
-    if (!isEmailValid) {
-      toast.error("Некорректный формат Email адреса", {
-        icon: null,
-        style: toastStyle,
-      });
-      return;
-    }
-
-    if (formData.message.trim().length === 0) {
-      toast.error("Напишите хотя бы пару слов в сообщении", {
-        icon: null,
-        style: toastStyle,
-      });
-      return;
-    }
-    if (!isMessageValid) {
-      toast.error("Сообщение слишком короткое (минимум 10 символов)", {
-        icon: null,
-        style: toastStyle,
-      });
+    if (Object.values(errors).some(error => error !== "")) {
+      toast.error("Пожалуйста, исправьте ошибки в форме");
       return;
     }
 
@@ -259,31 +282,31 @@ const App: React.FC = () => {
             <nav className="flex gap-6 text-sm font-medium">
               <button
                 onClick={() => scrollToSection("services")}
-                className="hover:text-primary transition-colors"
+                className={`transition-colors ${activeSection === "services" ? "text-primary font-bold" : "hover:text-primary"}`}
               >
                 Услуги
               </button>
               <button
                 onClick={() => scrollToSection("pricing")}
-                className="hover:text-primary transition-colors"
+                className={`transition-colors ${activeSection === "pricing" ? "text-primary font-bold" : "hover:text-primary"}`}
               >
                 Прайс
               </button>
               <button
                 onClick={() => scrollToSection("calculator")}
-                className="hover:text-primary transition-colors"
+                className={`transition-colors ${activeSection === "calculator" ? "text-primary font-bold" : "hover:text-primary"}`}
               >
                 Калькулятор
               </button>
               <button
                 onClick={() => scrollToSection("portfolio")}
-                className="hover:text-primary transition-colors"
+                className={`transition-colors ${activeSection === "portfolio" ? "text-primary font-bold" : "hover:text-primary"}`}
               >
                 Портфолио
               </button>
               <button
                 onClick={() => scrollToSection("contacts")}
-                className="hover:text-primary transition-colors"
+                className={`transition-colors ${activeSection === "contacts" ? "text-primary font-bold" : "hover:text-primary"}`}
               >
                 Контакты
               </button>
@@ -327,25 +350,25 @@ const App: React.FC = () => {
             <nav className="flex flex-col gap-4 text-center">
               <button
                 onClick={() => scrollToSection("services")}
-                className="py-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg"
+                className={`py-2 rounded-lg ${activeSection === "services" ? "bg-blue-50 dark:bg-slate-800 text-primary font-bold" : "hover:bg-gray-50 dark:hover:bg-slate-800"}`}
               >
                 Услуги
               </button>
               <button
                 onClick={() => scrollToSection("pricing")}
-                className="py-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg"
+                className={`py-2 rounded-lg ${activeSection === "pricing" ? "bg-blue-50 dark:bg-slate-800 text-primary font-bold" : "hover:bg-gray-50 dark:hover:bg-slate-800"}`}
               >
                 Прайс
               </button>
               <button
                 onClick={() => scrollToSection("portfolio")}
-                className="py-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg"
+                className={`py-2 rounded-lg ${activeSection === "portfolio" ? "bg-blue-50 dark:bg-slate-800 text-primary font-bold" : "hover:bg-gray-50 dark:hover:bg-slate-800"}`}
               >
                 Портфолио
               </button>
               <button
                 onClick={() => scrollToSection("contacts")}
-                className="py-2 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg"
+                className={`py-2 rounded-lg ${activeSection === "contacts" ? "bg-blue-50 dark:bg-slate-800 text-primary font-bold" : "hover:bg-gray-50 dark:hover:bg-slate-800"}`}
               >
                 Контакты
               </button>
@@ -509,15 +532,16 @@ const App: React.FC = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PORTFOLIO.map((item) => (
+            {PORTFOLIO.map((item, index) => (
               <div
                 key={item.id}
                 className="group relative rounded-xl overflow-hidden cursor-pointer aspect-video"
-                onClick={() => setSelectedImage(item.imageUrl)}
+                onClick={() => setSelectedImageIndex(index)}
               >
                 <img
                   src={item.imageUrl}
                   alt={item.title}
+                  loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white p-4 text-center">
@@ -531,18 +555,65 @@ const App: React.FC = () => {
       </section>
 
       {/* Image Modal */}
-      {selectedImage && (
+      {selectedImageIndex !== null && (
         <div
-          className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
+          className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4 md:p-8"
+          onClick={() => setSelectedImageIndex(null)}
         >
-          <img
-            src={selectedImage}
-            alt="Full view"
-            className="max-w-full max-h-[90vh] rounded-lg shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          />
-          <button className="absolute top-4 right-4 text-white p-2">
+          <div className="relative max-w-5xl w-full flex items-center justify-center group/modal">
+            {/* Prev Button */}
+            <button
+              onClick={handlePrevImage}
+              className="absolute left-0 md:-left-16 text-white/50 hover:text-white transition-colors p-2 z-10 hidden md:block"
+            >
+              <ChevronLeft className="w-12 h-12" />
+            </button>
+
+            <div className="relative overflow-hidden rounded-xl shadow-2xl bg-slate-900 flex flex-col items-center">
+              <img
+                src={PORTFOLIO[selectedImageIndex].imageUrl}
+                alt={PORTFOLIO[selectedImageIndex].title}
+                className="max-w-full max-h-[80vh] object-contain animate-in zoom-in-95 duration-300"
+                onClick={(e) => e.stopPropagation()}
+              />
+              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white text-center">
+                <h4 className="text-xl font-bold">{PORTFOLIO[selectedImageIndex].title}</h4>
+                <p className="text-sm opacity-70">{PORTFOLIO[selectedImageIndex].category}</p>
+                <div className="mt-2 text-xs opacity-50">
+                  {selectedImageIndex + 1} / {PORTFOLIO.length}
+                </div>
+              </div>
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={handleNextImage}
+              className="absolute right-0 md:-right-16 text-white/50 hover:text-white transition-colors p-2 z-10 hidden md:block"
+            >
+              <ChevronRight className="w-12 h-12" />
+            </button>
+            
+            {/* Mobile Controls */}
+            <div className="absolute bottom-[-60px] flex gap-8 md:hidden">
+              <button
+                onClick={handlePrevImage}
+                className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={handleNextImage}
+                className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+
+          <button
+            className="absolute top-6 right-6 text-white/50 hover:text-white p-2 transition-colors"
+            onClick={() => setSelectedImageIndex(null)}
+          >
             <X className="w-8 h-8" />
           </button>
         </div>
@@ -567,46 +638,66 @@ const App: React.FC = () => {
               noValidate
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Имя"
+                    value={formData.name}
+                    onChange={handleFormChange}
+                    onBlur={handleBlur}
+                    required
+                    className={getInputClass("name")}
+                  />
+                  {getFieldError("name") && (
+                    <p className="text-red-500 text-xs pl-1">{getFieldError("name")}</p>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <input
+                    type="text"
+                    name="phone"
+                    placeholder="Телефон"
+                    value={formData.phone}
+                    onChange={handleFormChange}
+                    onBlur={handleBlur}
+                    className={getInputClass("phone")}
+                  />
+                  {getFieldError("phone") && (
+                    <p className="text-red-500 text-xs pl-1">{getFieldError("phone")}</p>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-1">
                 <input
-                  type="text"
-                  name="name"
-                  placeholder="Имя"
-                  value={formData.name}
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
                   onChange={handleFormChange}
                   onBlur={handleBlur}
                   required
-                  className={getInputClass("name")}
+                  className={getInputClass("email")}
                 />
-                <input
-                  type="text"
-                  name="phone"
-                  placeholder="Телефон"
-                  value={formData.phone}
+                {getFieldError("email") && (
+                  <p className="text-red-500 text-xs pl-1">{getFieldError("email")}</p>
+                )}
+              </div>
+              <div className="space-y-1">
+                <textarea
+                  rows={4}
+                  name="message"
+                  placeholder="Опишите задачу..."
+                  value={formData.message}
                   onChange={handleFormChange}
                   onBlur={handleBlur}
-                  className={getInputClass("phone")}
-                />
+                  required
+                  className={`${getInputClass("message")} resize-none`}
+                ></textarea>
+                {getFieldError("message") && (
+                  <p className="text-red-500 text-xs pl-1">{getFieldError("message")}</p>
+                )}
               </div>
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={handleFormChange}
-                onBlur={handleBlur}
-                required
-                className={getInputClass("email")}
-              />
-              <textarea
-                rows={4}
-                name="message"
-                placeholder="Опишите задачу..."
-                value={formData.message}
-                onChange={handleFormChange}
-                onBlur={handleBlur}
-                required
-                className={`${getInputClass("message")} resize-none`}
-              ></textarea>
               <Button
                 id="submitRequest"
                 fullWidth

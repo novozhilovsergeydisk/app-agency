@@ -174,7 +174,12 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
                 return (
                   <button
                     key={type.id}
-                    onClick={() => setState(prev => ({ ...prev, projectType: type.id as any }))}
+                    onClick={() => setState(prev => ({ 
+                      ...prev, 
+                      projectType: type.id as any,
+                      features: [],
+                      hasDesign: null
+                    }))}
                     className={`p-6 rounded-xl border-2 text-left transition-all duration-300 group hover:shadow-md ${
                       isSelected 
                       ? 'border-primary bg-blue-50 dark:bg-blue-900/20' 
@@ -326,7 +331,12 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
             <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700 flex justify-between items-center">
                {state.step > 1 && (
                   <button 
-                    onClick={() => setState(prev => ({...prev, step: prev.step - 1}))}
+                    onClick={() => setState(prev => ({
+                      ...prev, 
+                      step: prev.step - 1,
+                      features: prev.step === 2 ? [] : prev.features,
+                      hasDesign: prev.step === 2 ? null : prev.hasDesign
+                    }))}
                     className="text-gray-500 font-medium px-4 py-2"
                   >
                       Назад

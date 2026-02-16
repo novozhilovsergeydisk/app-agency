@@ -239,6 +239,10 @@ const App: React.FC = () => {
       email: false,
       message: false,
     });
+    // Scroll to top of calculator
+    setTimeout(() => {
+      document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   return (
@@ -490,7 +494,7 @@ const App: React.FC = () => {
       {/* Calculator Section */}
       <section
         id="calculator"
-        className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800"
+        className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800 scroll-mt-20"
       >
         <div className="container mx-auto px-4">
           <Calculator onResult={clearForm} />

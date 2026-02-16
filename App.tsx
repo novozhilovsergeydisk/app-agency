@@ -33,6 +33,7 @@ const App: React.FC = () => {
 
   const handleNextImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (e?.currentTarget) (e.currentTarget as HTMLElement).blur();
     if (selectedImageIndex !== null) {
       setSelectedImageIndex((selectedImageIndex + 1) % PORTFOLIO.length);
     }
@@ -40,6 +41,7 @@ const App: React.FC = () => {
 
   const handlePrevImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    if (e?.currentTarget) (e.currentTarget as HTMLElement).blur();
     if (selectedImageIndex !== null) {
       setSelectedImageIndex((selectedImageIndex - 1 + PORTFOLIO.length) % PORTFOLIO.length);
     }
@@ -203,13 +205,7 @@ const App: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const errors = {
-      name: getFieldError("name"),
-      email: getFieldError("email"),
-      message: getFieldError("message"),
-      phone: getFieldError("phone"),
-    };
-
+    // Mark all fields as touched to show validation styles
     setTouched({
       name: true,
       phone: true,
@@ -217,8 +213,16 @@ const App: React.FC = () => {
       message: true,
     });
 
+    // Manual validation check for all required fields
+    const errors = {
+      name: formData.name.trim().length < 2 ? "Ошибка" : "",
+      email: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? "Ошибка" : "",
+      message: formData.message.trim().length < 10 ? "Ошибка" : "",
+      phone: (formData.phone.trim().length > 0 && formData.phone.trim().length < 10) ? "Ошибка" : ""
+    };
+
     if (Object.values(errors).some(error => error !== "")) {
-      toast.error("Пожалуйста, исправьте ошибки в форме");
+      toast.error("Пожалуйста, заполните все обязательные поля корректно");
       return;
     }
 
@@ -471,7 +475,7 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Прайс Лист</h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-700 dark:text-gray-400">
               Прозрачное ценообразование для любого масштаба
             </p>
           </div>
@@ -541,8 +545,17 @@ const App: React.FC = () => {
             {PORTFOLIO.map((item, index) => (
               <div
                 key={item.id}
-                className="group relative rounded-xl overflow-hidden cursor-pointer aspect-video"
+                role="button"
+                tabIndex={0}
+                className="group relative rounded-xl overflow-hidden cursor-pointer aspect-video focus:ring-4 focus:ring-primary outline-none"
                 onClick={() => setSelectedImageIndex(index)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedImageIndex(index);
+                  }
+                }}
+                aria-label={`Просмотреть проект: ${item.title}`}
               >
                 <img
                   src={item.imageUrl}
@@ -570,7 +583,7 @@ const App: React.FC = () => {
             {/* Prev Button */}
             <button
               onClick={handlePrevImage}
-              className="absolute left-0 md:-left-16 text-white/50 hover:text-white transition-colors p-2 z-10 hidden md:block"
+              className="absolute left-0 md:-left-16 text-white/50 hover:text-white transition-colors p-2 z-10 hidden md:block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full"
             >
               <ChevronLeft className="w-12 h-12" />
             </button>
@@ -594,7 +607,7 @@ const App: React.FC = () => {
             {/* Next Button */}
             <button
               onClick={handleNextImage}
-              className="absolute right-0 md:-right-16 text-white/50 hover:text-white transition-colors p-2 z-10 hidden md:block"
+              className="absolute right-0 md:-right-16 text-white/50 hover:text-white transition-colors p-2 z-10 hidden md:block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full"
             >
               <ChevronRight className="w-12 h-12" />
             </button>
@@ -603,13 +616,13 @@ const App: React.FC = () => {
             <div className="absolute bottom-[-60px] flex gap-8 md:hidden">
               <button
                 onClick={handlePrevImage}
-                className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white"
+                className="bg-white/10 p-3 rounded-full text-white outline-none active:bg-white/20 transition-colors"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <button
                 onClick={handleNextImage}
-                className="bg-white/10 hover:bg-white/20 p-3 rounded-full text-white"
+                className="bg-white/10 p-3 rounded-full text-white outline-none active:bg-white/20 transition-colors"
               >
                 <ChevronRight className="w-6 h-6" />
               </button>
@@ -754,19 +767,19 @@ const App: React.FC = () => {
       {/* Footer */}
       <footer className="bg-white dark:bg-dark border-t border-gray-200 dark:border-slate-800 py-12">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-500 text-sm mb-6">
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
             © {new Date().getFullYear()} dev-infra.ru | Все права защищены.
           </p>
           <div className="flex flex-col md:flex-row justify-center items-center gap-3 md:gap-6">
             <button
               onClick={() => setShowPrivacyPolicy(true)}
-              className="text-gray-500 hover:text-primary transition-colors text-sm"
+              className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors text-sm"
             >
               Политика конфиденциальности
             </button>
             <button
               onClick={() => setShowConsent(true)}
-              className="text-gray-500 hover:text-primary transition-colors text-sm"
+              className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors text-sm"
             >
               Согласие на обработку персональных данных
             </button>

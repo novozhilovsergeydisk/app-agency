@@ -268,6 +268,9 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
                  return (
                     <div 
                       key={feature.id}
+                      role={isBase ? "article" : "checkbox"}
+                      aria-checked={isSelected}
+                      tabIndex={isBase ? -1 : 0}
                       onClick={() => {
                         if (isBase) return;
                         const exists = state.features.includes(feature.label);
@@ -276,7 +279,18 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
                           features: exists ? prev.features.filter(f => f !== feature.label) : [...prev.features, feature.label]
                         }))
                       }}
-                      className={`p-4 rounded-xl border flex justify-between items-center transition-all ${
+                      onKeyDown={(e) => {
+                        if (isBase) return;
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          const exists = state.features.includes(feature.label);
+                          setState(prev => ({
+                            ...prev,
+                            features: exists ? prev.features.filter(f => f !== feature.label) : [...prev.features, feature.label]
+                          }))
+                        }
+                      }}
+                      className={`p-4 rounded-xl border flex justify-between items-center transition-all outline-none focus:ring-2 focus:ring-primary ${
                           isBase ? 'border-emerald-100 bg-emerald-50/50 dark:border-emerald-900/30 dark:bg-emerald-900/10 cursor-default' :
                           isSelected ? 'border-primary bg-blue-50 dark:bg-blue-900/20 cursor-pointer' : 
                           'border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-900/50 cursor-pointer'
@@ -309,9 +323,9 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
                 <Sparkles className="w-8 h-8 text-emerald-500" />
             </div>
             <h3 className="text-2xl font-bold mb-2">Расчет готов!</h3>
-            <p className="text-gray-500 mb-8">Ориентировочная стоимость проекта</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-8 font-medium">Ориентировочная стоимость проекта</p>
             
-            <div className="text-5xl font-bold text-primary mb-12">
+            <div className="text-5xl font-bold text-primary mb-12" aria-live="polite">
               {estimatedCost.toLocaleString('ru-RU')} ₽
             </div>
             
@@ -338,7 +352,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
               </Button>
             </div>
             
-            <p className="text-xs text-gray-400 mt-6">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 italic">
                 Не является публичной офертой. Стоимость уточняется после уточнения всех деталей.
             </p>
           </div>

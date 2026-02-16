@@ -184,13 +184,19 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
                 return (
                   <button
                     key={type.id}
-                    onClick={() => setState(prev => ({ 
-                      ...prev, 
-                      projectType: type.id as any,
-                      features: [],
-                      hasDesign: null
-                    }))}
-                    className={`p-6 rounded-xl border-2 text-left transition-all duration-300 group hover:shadow-md ${
+                    onClick={() => {
+                      if (isSelected) {
+                        handleNext();
+                      } else {
+                        setState(prev => ({ 
+                          ...prev, 
+                          projectType: type.id as any,
+                          features: [],
+                          hasDesign: null
+                        }));
+                      }
+                    }}
+                    className={`p-6 rounded-xl border-2 text-left transition-all duration-300 group hover:shadow-md relative ${
                       isSelected 
                       ? 'border-primary bg-blue-50 dark:bg-blue-900/20' 
                       : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800'
@@ -199,6 +205,15 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
                     <Icon className={`w-8 h-8 mb-4 ${isSelected ? 'text-primary' : 'text-gray-400'}`} />
                     <span className="block font-bold mb-1 leading-tight">{type.label}</span>
                     <span className="text-xs text-gray-500">{type.desc}</span>
+                    
+                    {/* Mobile Quick-Next Arrow */}
+                    {isSelected && (
+                      <div className="absolute bottom-4 right-4 md:hidden animate-in fade-in zoom-in duration-300">
+                        <div className="bg-primary text-white p-2 rounded-full shadow-lg shadow-blue-500/40">
+                          <ChevronRight className="w-5 h-5" />
+                        </div>
+                      </div>
+                    )}
                   </button>
                 );
               })}

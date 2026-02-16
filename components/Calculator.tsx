@@ -83,17 +83,25 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
     return total;
   };
 
+  const scrollToTop = () => {
+    setTimeout(() => {
+      document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+    }, 10);
+  };
+
   const handleNext = () => {
     if (state.step === 2) {
       setEstimatedCost(calculateCost());
       if (onResult) onResult();
     }
     setState(prev => ({ ...prev, step: prev.step + 1 }));
+    scrollToTop();
   };
 
   const reset = () => {
     setState(initialState);
     setEstimatedCost(0);
+    scrollToTop();
   };
 
   const projectTypes = [
@@ -336,12 +344,15 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
             <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700 flex justify-between items-center">
                {state.step > 1 && (
                   <button 
-                    onClick={() => setState(prev => ({
-                      ...prev, 
-                      step: prev.step - 1,
-                      features: prev.step === 2 ? [] : prev.features,
-                      hasDesign: prev.step === 2 ? null : prev.hasDesign
-                    }))}
+                    onClick={() => {
+                      setState(prev => ({
+                        ...prev, 
+                        step: prev.step - 1,
+                        features: prev.step === 2 ? [] : prev.features,
+                        hasDesign: prev.step === 2 ? null : prev.hasDesign
+                      }));
+                      scrollToTop();
+                    }}
                     className="text-gray-500 font-medium px-4 py-2"
                   >
                       Назад

@@ -484,7 +484,7 @@ const App: React.FC = () => {
             {PRICING_PLANS.map((plan, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800/60 flex flex-col hover:-translate-y-2 transition-transform duration-300"
+                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800/60 flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/50 dark:hover:border-primary/30 group/plan"
               >
                 <h3 className="text-lg font-bold mb-2">{plan.title}</h3>
                 <div className="text-2xl font-bold text-primary mb-6">

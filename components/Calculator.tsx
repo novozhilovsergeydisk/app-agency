@@ -200,8 +200,8 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
                     }}
                     className={`p-6 rounded-xl border-2 text-left transition-all duration-300 group hover:shadow-md relative ${
                       isSelected 
-                      ? 'border-primary bg-blue-50 dark:bg-blue-900/20' 
-                      : 'border-gray-200 dark:border-slate-800/60 bg-white dark:bg-slate-800'
+                      ? 'border-primary bg-blue-50 dark:bg-blue-900/30' 
+                      : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 hover:dark:border-slate-600'
                     }`}
                   >
                     <Icon className={`w-8 h-8 mb-4 ${isSelected ? 'text-primary' : 'text-gray-400'}`} />

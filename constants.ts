@@ -51,9 +51,9 @@ export const SERVICES: Service[] = [
  * - Технологии: Nginx Upstream, PostgreSQL Replication, Keepalived.
  * - Аргумент: "Ваш сайт не упадет, даже если один из серверов полностью выйдет из строя".
  * 
- * 6. Мониторинг 24/7 (Grafana, Alerting):
+ * 6. Мониторинг 24/7 (Grafana, Zabbix, Alerting):
  * - Что делаем: Сбор метрик нагрузки и настройка уведомлений в Telegram о сбоях.
- * - Технологии: Prometheus, Grafana, Node Exporter.
+ * - Технологии: Prometheus + Grafana (для облаков), Zabbix (для инфраструктуры).
  * - Аргумент: "Мы узнаем о проблеме раньше вас и ваших клиентов благодаря мгновенным уведомлениям".
  * 
  * 7. Docker & CI/CD:
@@ -65,6 +65,11 @@ export const SERVICES: Service[] = [
  * - Что делаем: Тюнинг параметров памяти и диска под конкретную базу данных.
  * - Технологии: pgTune, оптимизация индексов.
  * - Аргумент: "База данных не будет 'тормозить' при росте количества пользователей".
+ * 
+ * 9. Почтовый сервер (Postfix, Dovecot, iRedMail):
+ * - Что делаем: Настройка полноценного корпоративного почтового сервера с защитой от спама и шифрованием.
+ * - Технологии: Postfix, Dovecot, SpamAssassin, Rspamd, iRedMail.
+ * - Аргумент: "Своя почта — это независимость от сторонних сервисов и полный контроль над перепиской".
  */
 
 export const PORTFOLIO: PortfolioItem[] = [
@@ -157,5 +162,6 @@ export const ADDITIONAL_COSTS = {
   // Серверы
   backupConfig: 3000,
   highAvailability: 8000,
-  dbSetup: 5000
+  dbSetup: 5000,
+  mailServer: 7000
 };

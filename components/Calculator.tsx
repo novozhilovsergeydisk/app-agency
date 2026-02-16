@@ -71,6 +71,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
       state.features.forEach(f => {
         if (f.includes('Отказоустойчивость')) total += ADDITIONAL_COSTS.highAvailability;
         else if (f.includes('СУБД')) total += ADDITIONAL_COSTS.dbSetup;
+        else if (f.includes('Почтовый')) total += ADDITIONAL_COSTS.mailServer;
         else total += ADDITIONAL_COSTS.backupConfig;
       });
     } else if (state.projectType === 'custom') {
@@ -125,11 +126,12 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
       return [
         { id: 'base_os', label: 'Настройка ОС', desc: 'Linux, SSH, Users, Security', isBase: true },
         { id: 'base_env', label: 'Веб-окружение', desc: 'Nginx, Docker, Runtime', isBase: true },
+        { id: 'mail', label: 'Почтовый сервер', desc: 'Postfix, Dovecot, iRedMail' },
         { id: 'db', label: 'Настройка СУБД', desc: 'PostgreSQL, MySQL, MongoDB' },
         { id: 'sec', label: 'Защита и Firewall', desc: 'Безопасность' },
         { id: 'back', label: 'Бэкапы', desc: 'Сохранность данных' },
         { id: 'ha', label: 'Отказоустойчивость', desc: 'Кластеры' },
-        { id: 'mon', label: 'Мониторинг 24/7', desc: 'Grafana, Alerting' }
+        { id: 'mon', label: 'Мониторинг 24/7', desc: 'Zabbix, Grafana, Alerting' }
       ];
     }
     if (state.projectType === 'shop') {

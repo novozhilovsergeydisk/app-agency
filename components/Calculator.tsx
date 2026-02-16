@@ -11,9 +11,10 @@ import {
 
 interface CalculatorProps {
   onResult?: () => void;
+  onSendRequest?: (details: string) => void;
 }
 
-const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
+const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
   const initialState: QuizState = {
     step: 1,
     projectType: null,
@@ -101,6 +102,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
   const reset = () => {
     setState(initialState);
     setEstimatedCost(0);
+    if (onResult) onResult();
     scrollToTop();
   };
 
@@ -313,9 +315,29 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult }) => {
               {estimatedCost.toLocaleString('ru-RU')} ₽
             </div>
             
-            <Button onClick={reset} variant="outline" className="flex items-center justify-center gap-2 w-full max-w-xs mx-auto">
-              <RefreshCw className="w-4 h-4" /> Рассчитать заново
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+              <Button 
+                onClick={() => {
+                  const typeMapping: Record<string, string> = {
+                    'landing': 'Landing Page',
+                    'shop': 'Интернет-Магазин',
+                    'system': 'Информационная Система',
+                    'bot': 'Чат-боты & AI',
+                    'server': 'Настройка серверов',
+                    'custom': 'Разовые задачи'
+                  };
+                  const details = `Заявка из калькулятора:\nПроект: ${typeMapping[state.projectType || '']}\nСтоимость: ${estimatedCost.toLocaleString('ru-RU')} ₽\nОпции:\n- ${state.features.length > 0 ? state.features.join('\n- ') : 'Базовая комплектация'}${state.hasDesign === false ? '\n- Требуется разработка дизайна' : ''}`;
+                  if (onSendRequest) onSendRequest(details);
+                }}
+                className="flex-1"
+              >
+                Оформить заявку
+              </Button>
+              <Button onClick={reset} variant="outline" className="flex items-center justify-center gap-2 flex-1">
+                <RefreshCw className="w-4 h-4" /> Заново
+              </Button>
+            </div>
+            
             <p className="text-xs text-gray-400 mt-6">
                 Не является публичной офертой. Стоимость уточняется после уточнения всех деталей.
             </p>

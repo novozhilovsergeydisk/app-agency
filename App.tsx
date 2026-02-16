@@ -520,7 +520,13 @@ const App: React.FC = () => {
         className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800 scroll-mt-20"
       >
         <div className="container mx-auto px-4">
-          <Calculator onResult={clearForm} />
+          <Calculator 
+            onResult={clearForm} 
+            onSendRequest={(details) => {
+              setFormData(prev => ({ ...prev, message: details }));
+              scrollToSection("contacts");
+            }}
+          />
         </div>
       </section>
 

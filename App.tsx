@@ -275,7 +275,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="fixed w-full top-0 z-50 bg-white/80 dark:bg-dark/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800 transition-colors">
+      <header className="fixed w-full top-0 z-50 bg-white/80 dark:bg-dark/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800/50 transition-colors">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-2xl text-primary">
             <Code className="w-8 h-8" />
@@ -350,7 +350,7 @@ const App: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 py-4 px-4 shadow-xl absolute w-full">
+          <div className="md:hidden bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800/50 py-4 px-4 shadow-xl absolute w-full">
             <nav className="flex flex-col gap-4 text-center">
               <button
                 onClick={() => scrollToSection("services")}
@@ -410,7 +410,7 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className="relative">
-            <div className="relative z-10 bg-gradient-to-tr from-slate-200 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-6 shadow-2xl border border-gray-200 dark:border-slate-700">
+            <div className="relative z-10 bg-gradient-to-tr from-slate-200 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-6 shadow-2xl border border-gray-200 dark:border-slate-800/60">
               <div className="flex gap-2 mb-4">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500" />
@@ -451,7 +451,7 @@ const App: React.FC = () => {
             {SERVICES.map((service) => (
               <div
                 key={service.id}
-                className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 dark:border-slate-700 group"
+                className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 dark:border-slate-800/60 group"
               >
                 <div className="w-14 h-14 bg-blue-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
                   {service.icon === "code" && <Code className="w-8 h-8" />}
@@ -484,7 +484,7 @@ const App: React.FC = () => {
             {PRICING_PLANS.map((plan, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 flex flex-col hover:-translate-y-2 transition-transform duration-300"
+                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800/60 flex flex-col hover:-translate-y-2 transition-transform duration-300"
               >
                 <h3 className="text-lg font-bold mb-2">{plan.title}</h3>
                 <div className="text-2xl font-bold text-primary mb-6">
@@ -652,7 +652,7 @@ const App: React.FC = () => {
           <div className="flex flex-col gap-12">
             {/* Form First */}
             <form
-              className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-700 space-y-4"
+              className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800/60 space-y-4"
               onSubmit={handleSubmit}
               noValidate
             >
@@ -729,7 +729,7 @@ const App: React.FC = () => {
 
             {/* Contact Info Second */}
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-700">
+              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800/60">
                 <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
                   <Phone className="w-6 h-6" />
                 </div>
@@ -739,7 +739,7 @@ const App: React.FC = () => {
                   <p className="font-semibold">+7 (916) 346-54-07</p>
                 </div>
               </div>
-              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-700">
+              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800/60">
                 <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
                   <Mail className="w-6 h-6" />
                 </div>
@@ -748,7 +748,7 @@ const App: React.FC = () => {
                   <p className="font-semibold">info@dev-infra.ru</p>
                 </div>
               </div>
-              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-700">
+              <div className="flex flex-col items-center text-center gap-4 p-6 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800/60">
                 <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-slate-800 flex items-center justify-center text-primary">
                   <MapPin className="w-6 h-6" />
                 </div>

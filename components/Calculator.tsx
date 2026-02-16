@@ -201,7 +201,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
                     className={`p-6 rounded-xl border-2 text-left transition-all duration-300 group hover:shadow-md relative ${
                       isSelected 
                       ? 'border-primary bg-blue-50 dark:bg-blue-900/20' 
-                      : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800'
+                      : 'border-gray-200 dark:border-slate-800/60 bg-white dark:bg-slate-800'
                     }`}
                   >
                     <Icon className={`w-8 h-8 mb-4 ${isSelected ? 'text-primary' : 'text-gray-400'}`} />
@@ -234,7 +234,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
             </div>
 
             {isWebService && (
-              <div className="bg-gray-50 dark:bg-slate-900/50 p-6 rounded-xl border border-gray-100 dark:border-slate-700 mb-6">
+              <div className="bg-gray-50 dark:bg-slate-900/50 p-6 rounded-xl border border-gray-100 dark:border-slate-800/60 mb-6">
                 <p className="font-semibold mb-4 flex items-center gap-2">
                   <Palette className="w-5 h-5 text-primary" />
                   Дизайн
@@ -293,7 +293,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
                       className={`p-4 rounded-xl border flex justify-between items-center transition-all outline-none focus:ring-2 focus:ring-primary ${
                           isBase ? 'border-emerald-100 bg-emerald-50/50 dark:border-emerald-900/30 dark:bg-emerald-900/10 cursor-default' :
                           isSelected ? 'border-primary bg-blue-50 dark:bg-blue-900/20 cursor-pointer' : 
-                          'border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-900/50 cursor-pointer'
+                          'border-gray-200 dark:border-slate-800/60 hover:bg-gray-50 dark:hover:bg-slate-900/50 cursor-pointer'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -371,7 +371,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl max-w-4xl mx-auto border border-gray-100 dark:border-slate-700 relative overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl max-w-4xl mx-auto border border-gray-100 dark:border-slate-800/60 relative overflow-hidden">
       <div className="relative z-10">
           <div className="mb-8 flex justify-between items-center">
             <div className="flex items-center gap-3">
@@ -392,7 +392,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onResult, onSendRequest }) => {
           </div>
 
           {state.step < 3 && (
-            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700 flex justify-between items-center">
+            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-800/60 flex justify-between items-center">
                {state.step > 1 && (
                   <button 
                     onClick={() => {

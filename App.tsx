@@ -64,12 +64,14 @@ const App: React.FC = () => {
     phone: "",
     email: "",
     message: "",
+    acceptedPrivacy: false,
   });
   const [touched, setTouched] = useState({
     name: false,
     phone: false,
     email: false,
     message: false,
+    acceptedPrivacy: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -130,9 +132,12 @@ const App: React.FC = () => {
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    const { name, type, value } = e.target;
+    const finalValue = type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: finalValue,
     });
   };
 
@@ -145,17 +150,19 @@ const App: React.FC = () => {
     });
   };
 
-  const validateField = (name: string, value: string) => {
+  const validateField = (name: string, value: any) => {
     switch (name) {
       case "name":
-        return value.trim().length >= 2;
+        return typeof value === "string" && value.trim().length >= 2;
       case "email":
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       case "message":
-        return value.trim().length >= 10;
+        return typeof value === "string" && value.trim().length >= 10;
       case "phone":
         // Phone is optional, but if entered, should be reasonable length
-        return value === "" || value.trim().length >= 10;
+        return typeof value === "string" && (value === "" || value.trim().length >= 10);
+      case "acceptedPrivacy":
+        return !!value;
       default:
         return true;
     }
@@ -185,6 +192,9 @@ const App: React.FC = () => {
       case "phone":
         if (value.trim().length > 0 && value.trim().length < 10) return "Введите минимум 10 цифр";
         break;
+      case "acceptedPrivacy":
+        if (!value) return "Необходимо согласие с политикой конфиденциальности";
+        break;
     }
     return "";
   };
@@ -211,6 +221,7 @@ const App: React.FC = () => {
       phone: true,
       email: true,
       message: true,
+      acceptedPrivacy: true,
     });
 
     // Manual validation check for all required fields
@@ -218,11 +229,16 @@ const App: React.FC = () => {
       name: formData.name.trim().length < 2 ? "Ошибка" : "",
       email: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? "Ошибка" : "",
       message: formData.message.trim().length < 10 ? "Ошибка" : "",
-      phone: (formData.phone.trim().length > 0 && formData.phone.trim().length < 10) ? "Ошибка" : ""
+      phone: (formData.phone.trim().length > 0 && formData.phone.trim().length < 10) ? "Ошибка" : "",
+      acceptedPrivacy: !formData.acceptedPrivacy ? "Ошибка" : ""
     };
 
     if (Object.values(errors).some(error => error !== "")) {
-      toast.error("Пожалуйста, заполните все обязательные поля корректно");
+      if (!formData.acceptedPrivacy) {
+        toast.error("Необходимо согласиться с политикой конфиденциальности");
+      } else {
+        toast.error("Пожалуйста, заполните все обязательные поля корректно");
+      }
       return;
     }
 
@@ -241,8 +257,8 @@ const App: React.FC = () => {
         toast.success(
           "Заявка отправлена успешно! Мы свяжемся с вами в ближайшее время.",
         );
-        setFormData({ name: "", phone: "", email: "", message: "" });
-        setTouched({ name: false, phone: false, email: false, message: false });
+        setFormData({ name: "", phone: "", email: "", message: "", acceptedPrivacy: false });
+        setTouched({ name: false, phone: false, email: false, message: false, acceptedPrivacy: false });
       } else {
         toast.error("Ошибка при отправке заявки. Попробуйте позже.");
       }
@@ -259,12 +275,14 @@ const App: React.FC = () => {
       phone: "",
       email: "",
       message: "",
+      acceptedPrivacy: false,
     });
     setTouched({
       name: false,
       phone: false,
       email: false,
       message: false,
+      acceptedPrivacy: false,
     });
     // Scroll to top of calculator
     setTimeout(() => {
@@ -717,11 +735,36 @@ const App: React.FC = () => {
                   <p className="text-red-500 text-xs pl-1">{getFieldError("message")}</p>
                 )}
               </div>
+              <div className="flex flex-col gap-2">
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    name="acceptedPrivacy"
+                    checked={formData.acceptedPrivacy}
+                    onChange={handleFormChange}
+                    onBlur={handleBlur}
+                    className="mt-1 w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400 leading-tight">
+                    Я согласен с{" "}
+                    <button
+                      type="button"
+                      onClick={() => setShowPrivacyPolicy(true)}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      политикой конфиденциальности
+                    </button>
+                  </span>
+                </label>
+                {getFieldError("acceptedPrivacy") && (
+                  <p className="text-red-500 text-xs pl-7">{getFieldError("acceptedPrivacy")}</p>
+                )}
+              </div>
               <Button
                 id="submitRequest"
                 fullWidth
                 className="mt-2"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !formData.acceptedPrivacy}
               >
                 {isSubmitting ? "Отправка..." : "Отправить заявку"}
               </Button>

@@ -65,6 +65,7 @@ const App: React.FC = () => {
     email: "",
     message: "",
     acceptedPrivacy: false,
+    acceptedConsent: false,
   });
   const [touched, setTouched] = useState({
     name: false,
@@ -72,6 +73,7 @@ const App: React.FC = () => {
     email: false,
     message: false,
     acceptedPrivacy: false,
+    acceptedConsent: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -163,6 +165,8 @@ const App: React.FC = () => {
         return typeof value === "string" && (value === "" || value.trim().length >= 10);
       case "acceptedPrivacy":
         return !!value;
+      case "acceptedConsent":
+        return !!value;
       default:
         return true;
     }
@@ -195,6 +199,9 @@ const App: React.FC = () => {
       case "acceptedPrivacy":
         if (!value) return "Необходимо согласие с политикой конфиденциальности";
         break;
+      case "acceptedConsent":
+        if (!value) return "Необходимо согласие на обработку персональных данных";
+        break;
     }
     return "";
   };
@@ -222,6 +229,7 @@ const App: React.FC = () => {
       email: true,
       message: true,
       acceptedPrivacy: true,
+      acceptedConsent: true,
     });
 
     // Manual validation check for all required fields
@@ -230,12 +238,15 @@ const App: React.FC = () => {
       email: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? "Ошибка" : "",
       message: formData.message.trim().length < 10 ? "Ошибка" : "",
       phone: (formData.phone.trim().length > 0 && formData.phone.trim().length < 10) ? "Ошибка" : "",
-      acceptedPrivacy: !formData.acceptedPrivacy ? "Ошибка" : ""
+      acceptedPrivacy: !formData.acceptedPrivacy ? "Ошибка" : "",
+      acceptedConsent: !formData.acceptedConsent ? "Ошибка" : ""
     };
 
     if (Object.values(errors).some(error => error !== "")) {
       if (!formData.acceptedPrivacy) {
         toast.error("Необходимо согласиться с политикой конфиденциальности");
+      } else if (!formData.acceptedConsent) {
+        toast.error("Необходимо согласиться на обработку персональных данных");
       } else {
         toast.error("Пожалуйста, заполните все обязательные поля корректно");
       }
@@ -257,8 +268,8 @@ const App: React.FC = () => {
         toast.success(
           "Заявка отправлена успешно! Мы свяжемся с вами в ближайшее время.",
         );
-        setFormData({ name: "", phone: "", email: "", message: "", acceptedPrivacy: false });
-        setTouched({ name: false, phone: false, email: false, message: false, acceptedPrivacy: false });
+        setFormData({ name: "", phone: "", email: "", message: "", acceptedPrivacy: false, acceptedConsent: false });
+        setTouched({ name: false, phone: false, email: false, message: false, acceptedPrivacy: false, acceptedConsent: false });
       } else {
         toast.error("Ошибка при отправке заявки. Попробуйте позже.");
       }
@@ -276,6 +287,7 @@ const App: React.FC = () => {
       email: "",
       message: "",
       acceptedPrivacy: false,
+      acceptedConsent: false,
     });
     setTouched({
       name: false,
@@ -283,6 +295,7 @@ const App: React.FC = () => {
       email: false,
       message: false,
       acceptedPrivacy: false,
+      acceptedConsent: false,
     });
     // Scroll to top of calculator
     setTimeout(() => {
@@ -735,7 +748,7 @@ const App: React.FC = () => {
                   <p className="text-red-500 text-xs pl-1">{getFieldError("message")}</p>
                 )}
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 <label className="flex items-start gap-3 cursor-pointer group">
                   <input
                     type="checkbox"
@@ -759,12 +772,36 @@ const App: React.FC = () => {
                 {getFieldError("acceptedPrivacy") && (
                   <p className="text-red-500 text-xs pl-7">{getFieldError("acceptedPrivacy")}</p>
                 )}
+
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    name="acceptedConsent"
+                    checked={formData.acceptedConsent}
+                    onChange={handleFormChange}
+                    onBlur={handleBlur}
+                    className="mt-1 w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400 leading-tight">
+                    Я согласен на{" "}
+                    <button
+                      type="button"
+                      onClick={() => setShowConsent(true)}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      обработку персональных данных
+                    </button>
+                  </span>
+                </label>
+                {getFieldError("acceptedConsent") && (
+                  <p className="text-red-500 text-xs pl-7">{getFieldError("acceptedConsent")}</p>
+                )}
               </div>
               <Button
                 id="submitRequest"
                 fullWidth
                 className="mt-2"
-                disabled={isSubmitting || !formData.acceptedPrivacy}
+                disabled={isSubmitting || !formData.acceptedPrivacy || !formData.acceptedConsent}
               >
                 {isSubmitting ? "Отправка..." : "Отправить заявку"}
               </Button>
